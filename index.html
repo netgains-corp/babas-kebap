@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Babas Pizza Burger Haus – Knusprig & saftig</title>
+<meta name="description" content="Pizza, Burger & Drehspieß in Rheinböllen – frisch, hausgemacht. Mittags 2 Pizzen zum Preis von 1! Jetzt anrufen oder vorbeikommen." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+
+<style>
+/* =========================================================================
+   TOKENS  – Rot mit knallgelben Rahmen & Schatten
+   ========================================================================= */
+:root{
+  --ink:        #fff8f0;
+  --ink-soft:   #ffdccb;
+  --ink-mute:   #f3b3a1;
+
+  --accent:     #ffd400;            /* Knallgelb – Rahmen, Glow, Icons */
+  --accent-2:   #ff2a18;            /* Rot */
+  --grad:       linear-gradient(135deg, #ff4231, #c50f06);   /* Buttons: rot */
+  --ok:         #5fe39a;
+
+  --glass:      rgba(54,8,5,.42);
+  --glass-2:    rgba(78,14,9,.5);
+  --stroke:     rgba(255,212,0,.34);
+  --stroke-2:   rgba(255,212,0,.5);
+
+  --radius:     24px;
+  --radius-sm:  18px;
+  --maxw:       680px;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+
+body{
+  background:#000;
+  color:var(--ink);
+  font-family:"DM Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  line-height:1.5;
+  min-height:100dvh;
+  width:100%; max-width:100%;
+  overflow-x:clip;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* =========================================================================
+   HINTERGRUND  – kräftiges Rot, faded aus Schwarz ein
+   ========================================================================= */
+.bg{
+  position:fixed; inset:0; z-index:0;
+  opacity:0; transition:opacity 1.8s ease;
+  pointer-events:none;
+}
+body.ready .bg{ opacity:1; }
+.bg__ambient{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(60% 50% at 18% 20%, rgba(255,102,80,.65), transparent 70%),
+    radial-gradient(55% 55% at 85% 28%, rgba(240,60,40,.60), transparent 70%),
+    radial-gradient(75% 60% at 55% 102%, rgba(255,160,50,.38), transparent 70%),
+    #6a2015;
+  z-index:-1;
+  animation:drift 18s ease-in-out infinite alternate;
+}
+@keyframes drift{
+  0%  { transform:scale(1.05) translate(0,0); }
+  100%{ transform:scale(1.12) translate(-2%, -2%); }
+}
+.bg__tint{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(180deg, rgba(30,3,2,.42) 0%, rgba(30,3,2,.18) 35%, rgba(20,2,1,.6) 100%),
+    radial-gradient(120% 80% at 50% 0%, transparent 45%, rgba(20,2,1,.5) 100%);
+}
+
+/* =========================================================================
+   LAYOUT
+   ========================================================================= */
+.wrap{
+  position:relative; z-index:1;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:clamp(16px,4vw,30px) clamp(14px,4vw,20px) 64px;
+  display:flex; flex-direction:column;
+  gap:clamp(14px,3.4vw,20px);
+  opacity:0; transform:translateY(16px);
+  transition:opacity 1s ease .45s, transform 1s ease .45s;
+}
+body.ready .wrap{ opacity:1; transform:none; }
+
+/* =========================================================================
+   GLAS-KACHEL  – knallgelber Rahmen + gelber Glow-Schatten
+   ========================================================================= */
+.tile{
+  position:relative;
+  background:var(--glass);
+  backdrop-filter:blur(16px) saturate(1.2);
+  -webkit-backdrop-filter:blur(16px) saturate(1.2);
+  border:2px solid var(--accent);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,212,0,.30),
+    0 14px 34px -12px rgba(0,0,0,.6),
+    0 0 46px -14px rgba(255,212,0,.6),       /* knallgelber Drop-Shadow/Glow */
+    inset 0 1px 0 rgba(255,255,255,.1);
+}
+.info{
+  box-shadow:
+    0 0 0 1px rgba(255,212,0,.24),
+    0 10px 22px -10px rgba(0,0,0,.55),
+    0 0 32px -14px rgba(255,212,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.1);
+}
+.ghost{
+  position:absolute; top:-10%; right:-6%; z-index:0;
+  width:46%; max-width:180px; height:auto; aspect-ratio:1/1;
+  color:var(--accent);
+  opacity:.05;
+  pointer-events:none;
+  transform:rotate(8deg);
+}
+.tile > *:not(.ghost){ position:relative; z-index:1; }
+
+/* =========================================================================
+   HERO
+   ========================================================================= */
+.hero{ padding:0; }
+.hero__media{
+  position:relative;
+  min-height:clamp(280px, 56vw, 360px);
+  display:flex; flex-direction:column; justify-content:flex-end; align-items:center;
+  text-align:center;
+  padding:clamp(20px,5vw,30px);
+  background:#2a0604; background-size:cover; background-position:center;
+}
+.hero__media::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 16%, rgba(28,3,2,.7) 55%, #240403 100%);
+}
+.status{
+  position:absolute; top:14px; right:14px; z-index:2;
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:.7rem; font-weight:600;
+  padding:4px 10px; border-radius:999px;
+  background:rgba(20,2,1,.55); border:1px solid var(--stroke);
+  backdrop-filter:blur(8px);
+}
+.status .dot{ width:7px; height:7px; border-radius:50%; background:var(--ink-mute); }
+.status.open  .dot{ background:var(--ok); box-shadow:0 0 10px 1px var(--ok); animation:pulse 2.2s ease-in-out infinite; }
+.status.open  { color:#bff5d6; }
+.status.closed{ color:var(--ink-soft); }
+@keyframes pulse{ 50%{ box-shadow:0 0 0 6px rgba(95,227,154,.16); } }
+
+.hero__head{ position:relative; z-index:2; }
+.pill{
+  display:inline-block;
+  font-size:.7rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  padding:6px 13px; border-radius:999px;
+  background:var(--accent); color:#3a0805;
+  box-shadow:0 6px 18px -6px rgba(255,212,0,.7);
+  margin-bottom:14px;
+}
+.hero__name{
+  font-family:"Bebas Neue", Impact, sans-serif; font-weight:400;
+  font-size:clamp(2.6rem, 11vw, 4.2rem); line-height:.86; letter-spacing:.01em;
+  color:var(--accent);
+  text-shadow:0 4px 30px rgba(0,0,0,.7);
+}
+.hero__spec{
+  margin-top:8px;
+  font-size:clamp(.78rem,2.6vw,.95rem); font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft);
+}
+.hero__sub{ margin-top:6px; color:var(--ink-soft); font-size:.95rem; }
+
+.hero__chips{
+  display:flex; flex-wrap:wrap; gap:9px; justify-content:center;
+  padding:clamp(16px,4vw,22px);
+}
+.chip{
+  display:inline-flex; align-items:center; gap:7px;
+  font-size:.82rem; font-weight:600;
+  padding:7px 13px; border-radius:999px;
+  background:var(--glass-2); border:1px solid var(--stroke);
+  color:var(--ink);
+}
+.chip svg{ width:15px; height:15px; color:var(--accent); }
+
+/* =========================================================================
+   AKTIONS-BANNER
+   ========================================================================= */
+.promo{
+  text-align:center;
+  padding:clamp(20px,5vw,26px);
+  background:linear-gradient(135deg, rgba(255,212,0,.18), rgba(255,42,24,.22));
+}
+.promo-badge{
+  display:inline-block; font-size:.68rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+  padding:5px 12px; border-radius:999px; background:var(--accent); color:#3a0805; margin-bottom:10px;
+}
+.promo-title{
+  font-family:"Bebas Neue", Impact, sans-serif; font-weight:400;
+  font-size:clamp(1.7rem,7.4vw,2.4rem); line-height:1.05; color:var(--ink);
+}
+.promo-title em{ font-style:normal; color:var(--accent); }
+.promo-sub{ margin-top:8px; font-size:.88rem; font-weight:600; color:var(--ink-soft); }
+.promo-valid{ margin-top:4px; font-size:.74rem; color:var(--ink-mute); }
+
+/* =========================================================================
+   3 INFO-KACHELN
+   ========================================================================= */
+.info-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(10px,2.6vw,16px); }
+.info{
+  padding:13px 8px;
+  text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+}
+.info .top-ico{
+  width:23px; height:23px; color:var(--accent);
+  filter:drop-shadow(0 4px 10px rgba(255,212,0,.6));
+}
+.info .label{ font-size:.56rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-mute); font-weight:700; }
+.info .val{ font-size:clamp(.76rem,2.4vw,.92rem); font-weight:600; color:var(--ink); }
+.info .ghost{ width:62%; max-width:92px; top:-16%; right:-12%; left:auto; bottom:auto; transform:rotate(8deg); opacity:.08; }
+
+/* =========================================================================
+   CTAs
+   ========================================================================= */
+.cta-row{ display:flex; flex-direction:column; gap:11px; }
+@property --btn-angle{ syntax:'<angle>'; initial-value:0deg; inherits:false; }
+.btn{
+  position:relative; isolation:isolate;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; padding:16px 20px; border-radius:16px;
+  font-family:"DM Sans", sans-serif; font-weight:700; font-size:1.02rem;
+  text-decoration:none; cursor:pointer; border:1px solid transparent;
+  transition:transform .15s ease, box-shadow .2s ease, background .2s ease;
+}
+.btn::before{
+  content:""; position:absolute; inset:-2px; z-index:-1;
+  border-radius:inherit; padding:2px;
+  background:conic-gradient(from var(--btn-angle),
+    var(--accent-2), var(--accent), #fff3a0, var(--accent), var(--accent-2));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:btn-spin 4s linear infinite;
+}
+@keyframes btn-spin{ to{ --btn-angle:360deg; } }
+.btn:active{ transform:translateY(1px) scale(.995); }
+.btn svg{ width:18px; height:18px; flex:0 0 auto; }
+.btn-primary{ background:var(--grad); color:#fff; box-shadow:0 12px 30px -10px var(--accent-2); }
+.btn-primary:hover{ box-shadow:0 16px 38px -10px var(--accent-2); }
+.btn-ghost{ background:var(--glass-2); color:var(--accent); backdrop-filter:blur(10px); box-shadow:0 10px 28px -14px rgba(255,212,0,.7); }
+.btn-ghost:hover{ background:rgba(255,212,0,.14); }
+.btn-ghost svg{ color:var(--accent); }
+
+/* =========================================================================
+   INFINITY-BANNER
+   ========================================================================= */
+.marquee{
+  position:relative; overflow:hidden;
+  border-top:1px solid var(--stroke); border-bottom:1px solid var(--stroke);
+  background:var(--glass);
+  border-radius:14px;
+  padding:13px 0;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee__track{ display:flex; gap:0; will-change:transform; }
+.marquee__track span{
+  font-family:"Bebas Neue", Impact, sans-serif; font-size:1.45rem; letter-spacing:.05em;
+  white-space:nowrap; padding:0 22px; color:var(--ink);
+  display:inline-flex; align-items:center; gap:22px; flex:0 0 auto;
+}
+.marquee__track span::after{ content:"\2666"; font-size:.8rem; color:var(--accent); }
+
+/* =========================================================================
+   SEKTIONS-KOPF
+   ========================================================================= */
+.head{ padding:2px 4px 0; }
+.head .eyebrow{ font-size:.7rem; letter-spacing:.26em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+.head h2{
+  font-family:"Bebas Neue", Impact, sans-serif; font-weight:400;
+  font-size:clamp(2rem,8vw,2.8rem); line-height:.92; letter-spacing:.02em; margin-top:4px; color:var(--ink);
+}
+
+/* =========================================================================
+   TRUST BANNER
+   ========================================================================= */
+.trust-banner{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px;
+  padding:0;
+}
+.trust-tile{
+  padding:18px 12px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:8px;
+}
+.trust-tile .ico{
+  width:32px; height:32px; color:var(--accent); flex:0 0 auto;
+  filter:drop-shadow(0 4px 10px rgba(255,212,0,.6));
+}
+.trust-tile .num,
+.trust-tile .big{
+  font-family:"Bebas Neue", Impact, sans-serif;
+  font-size:2.1rem; line-height:.9; letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;
+}
+.trust-tile .num{ color:var(--accent); filter:drop-shadow(0 4px 14px rgba(255,212,0,.5)); }
+.trust-tile .big{ color:var(--ink); }
+.trust-tile .text{
+  font-size:.66rem; font-weight:700; line-height:1.3;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-mute);
+}
+
+/* =========================================================================
+   SPEISEKARTE
+   ========================================================================= */
+.menu-grid{ display:grid; grid-template-columns:1fr; gap:clamp(12px,3vw,16px); }
+.cat{ padding:clamp(18px,4vw,24px); }
+.cat h3{
+  font-family:"Bebas Neue", Impact, sans-serif; font-weight:400;
+  font-size:1.7rem; letter-spacing:.04em; margin-bottom:4px; color:var(--accent);
+}
+.cat .cat-sub{ font-size:.8rem; color:var(--ink-mute); margin-bottom:14px; }
+.item{ display:flex; align-items:baseline; gap:8px; padding:7px 0; }
+.item .name{ font-weight:600; color:var(--ink); white-space:nowrap; }
+.item .desc{ font-size:.78rem; color:var(--ink-mute); }
+.item .dots{ flex:1 1 auto; border-bottom:1.5px dotted rgba(255,212,0,.32); transform:translateY(-4px); min-width:12px; }
+.item .price{ font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.tag-veg{ font-size:.6rem; font-weight:700; letter-spacing:.06em; color:#9be36a; border:1px solid #9be36a55; border-radius:6px; padding:1px 5px; margin-left:6px; vertical-align:middle; }
+.item.item-sub{ padding-top:0; margin-top:-3px; }
+.item.item-sub .name{ font-size:.78rem; font-weight:500; color:var(--ink-mute); padding-left:14px; }
+.item.item-sub .price{ font-size:.84rem; color:var(--ink-soft); }
+.cat-note{ margin-top:12px; padding-top:10px; border-top:1px dashed rgba(255,212,0,.25); font-size:.74rem; color:var(--ink-mute); line-height:1.5; }
+.finger-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+.ftag{ font-size:.78rem; font-weight:600; padding:6px 12px; border-radius:999px; background:var(--glass-2); border:1px solid var(--stroke); color:var(--ink); }
+
+/* =========================================================================
+   GALERIE
+   ========================================================================= */
+.gallery{ padding:clamp(18px,4vw,24px); }
+.grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:16px; }
+.gtile{ position:relative; aspect-ratio:1/1; border-radius:var(--radius-sm); overflow:hidden; border:2px solid var(--accent); box-shadow:0 0 26px -12px rgba(255,212,0,.6); display:grid; place-items:center; }
+.gtile.wide{ grid-column:span 2; aspect-ratio:2/1; }
+.gtile img{ width:100%; height:100%; object-fit:cover; display:block; }
+.gtile .cap{ position:absolute; left:0; right:0; bottom:0; padding:18px 12px 9px; font-size:.78rem; background:linear-gradient(transparent, rgba(20,2,1,.9)); }
+
+/* =========================================================================
+   ANFAHRT
+   ========================================================================= */
+.anfahrt{ padding:clamp(18px,4vw,24px); }
+.map{
+  position:relative; height:190px; border-radius:var(--radius-sm); margin:16px 0; overflow:hidden;
+  border:2px solid var(--accent);
+  background:
+    linear-gradient(rgba(255,212,0,.05), rgba(255,212,0,.05)),
+    repeating-linear-gradient(0deg,#2a0807 0 23px,#330b09 23px 24px),
+    repeating-linear-gradient(90deg,#2a0807 0 23px,#330b09 23px 24px);
+}
+.map .road{ position:absolute; background:#52201a; }
+.map .road.h{ left:-5%; right:-5%; height:10px; top:46%; transform:rotate(-4deg); }
+.map .road.v{ top:-5%; bottom:-5%; width:9px; left:62%; }
+.map .pin{ position:absolute; left:62%; top:46%; transform:translate(-50%,-100%); color:var(--accent); filter:drop-shadow(0 4px 10px rgba(255,212,0,.8)); animation:bob 2.4s ease-in-out infinite; }
+.map .pin svg{ width:34px; height:34px; }
+@keyframes bob{ 50%{ transform:translate(-50%,-115%); } }
+.contact-row{ display:flex; flex-direction:column; gap:12px; }
+.contact-row .line{ display:flex; gap:12px; align-items:flex-start; }
+.contact-row .line svg{ width:20px; height:20px; color:var(--accent); flex:0 0 auto; margin-top:2px; }
+.contact-row .label{ display:block; font-size:.64rem; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-mute); font-weight:700; margin-bottom:2px; }
+.hours-list{ display:flex; flex-direction:column; gap:3px; margin-top:2px; }
+.hours-row{ display:flex; justify-content:space-between; gap:14px; font-size:.86rem; color:var(--ink); }
+.hours-row.closed span:last-child{ color:#ff9a86; font-weight:700; }
+
+.foot{ text-align:center; color:var(--ink-mute); font-size:.8rem; padding:4px 0 2px; }
+.foot a{ color:var(--ink-soft); }
+
+:focus-visible{ outline:3px solid var(--accent); outline-offset:3px; border-radius:8px; }
+
+@media (min-width:560px){ .cta-row{ flex-direction:row; } }
+
+/* =========================================================================
+   SCROLL-EINFLUG
+   ========================================================================= */
+.reveal{ opacity:0; transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); will-change:opacity, transform; }
+.reveal--up    { transform:translateY(46px); }
+.reveal--left  { transform:translateX(-54px); }
+.reveal--right { transform:translateX(54px); }
+.reveal--scale { transform:scale(.9); }
+.reveal.in{ opacity:1; transform:none; }
+.stagger > *{ opacity:0; transform:translateY(40px); transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+.stagger.in > *{ opacity:1; transform:none; }
+.stagger.in > *:nth-child(1){ transition-delay:.00s; }
+.stagger.in > *:nth-child(2){ transition-delay:.09s; }
+.stagger.in > *:nth-child(3){ transition-delay:.18s; }
+.stagger.in > *:nth-child(4){ transition-delay:.27s; }
+.stagger.in > *:nth-child(5){ transition-delay:.36s; }
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; }
+  .bg, .wrap{ transition:none; opacity:1; transform:none; }
+  .marquee__track{ animation:none; }
+  .reveal, .stagger > *{ opacity:1 !important; transform:none !important; transition:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="bg__ambient"></div>
+  <div class="bg__tint"></div>
+</div>
+
+<main class="wrap" id="top" aria-label="Babas Pizza Burger Haus">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="tile hero">
+    <div class="hero__media" style="background-image:url('https://images.pexels.com/photos/11220676/pexels-photo-11220676.jpeg?auto=compress&cs=tinysrgb&w=1200')">
+      <span class="status"><span class="dot"></span><span class="status-text">Geöffnet</span></span>
+      <div class="hero__head">
+        <span class="pill">Pizza · Burger · Haus</span>
+        <h1 class="hero__name">Babas Pizza Burger Haus</h1>
+        <p class="hero__spec">Pizza · Burger · Drehspieß</p>
+        <p class="hero__sub">Knusprig, saftig, hausgemacht.</p>
+      </div>
+    </div>
+    <div class="hero__chips">
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 13L2 9Z"/><circle cx="9" cy="9" r="1"/><circle cx="13" cy="12" r="1"/></svg> Steinofen-Pizza</span>
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11a7 7 0 0 1 14 0"/><path d="M3 14h18"/><rect x="4" y="16" width="16" height="3" rx="1.5"/></svg> Saftige Burger</span>
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><ellipse cx="12" cy="6" rx="4.2" ry="1.6"/><ellipse cx="12" cy="11" rx="4.2" ry="1.6"/><ellipse cx="12" cy="16" rx="4.2" ry="1.6"/></svg> Frischer Drehspieß</span>
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Täglich frisch</span>
+    </div>
+  </section>
+
+  <!-- ========================= AKTION ========================= -->
+  <section class="tile promo reveal reveal--scale">
+    <span class="promo-badge">Mittags-Deal</span>
+    <h3 class="promo-title">2 Pizzen kaufen,<br><em>nur 1 bezahlen!</em></h3>
+    <p class="promo-sub">Täglich 12:00 – 17:00 Uhr · Nur für Selbstabholer</p>
+    <p class="promo-valid">Gültig bis 01.08.2026</p>
+  </section>
+
+  <!-- ======================= 3 INFO-KACHELN ======================= -->
+  <div class="info-grid stagger">
+    <div class="tile info">
+      <svg class="top-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span class="label">Standort</span><span class="val">Rheinböllen</span>
+    </div>
+    <div class="tile info">
+      <svg class="top-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span class="label">Öffnungszeiten</span><span class="val">Mo–Sa 11:30–21:30</span>
+    </div>
+    <div class="tile info">
+      <svg class="top-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M3 6h3l2.5 8h7l2-6H8"/><path d="M14 6h5l1 4"/></svg>
+      <span class="label">Lieferung</span><span class="val">Tgl. 12:00–21:00</span>
+    </div>
+  </div>
+
+  <!-- ============================ CTAs ============================ -->
+  <div class="cta-row reveal reveal--up">
+    <a class="btn btn-primary" href="tel:+4967643661">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg>
+      Jetzt anrufen
+    </a>
+    <a class="btn btn-ghost" href="#karte">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4zM4 11h16M4 16h10"/></svg>
+      Speisekarte ansehen
+    </a>
+  </div>
+
+  <!-- ========================== LAUFBAND ========================== -->
+  <div class="marquee reveal reveal--scale" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Steinofen-Pizza</span><span>Saftige Burger</span><span>Frischer Drehspieß</span><span>Hausgemachte Saucen</span><span>Täglich frisch</span><span>Pizza · Burger · Drehspieß</span>
+    </div>
+  </div>
+
+  <!-- =========================== TRUST =========================== -->
+  <section class="tile trust-banner stagger">
+    <div class="trust-tile">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10Z"/></svg>
+      <span class="num" data-count="100" data-suffix=" %">0 %</span><span class="text">Frisch</span>
+    </div>
+    <div class="trust-tile">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10v4a4 4 0 0 1-4 4h-2l-3 3v-3H6a4 4 0 0 1-4-4v-4A10 10 0 0 1 12 2Z"/><path d="M8 10h8M8 14h4"/></svg>
+      <span class="num" data-count="100" data-suffix=" %">0 %</span><span class="text">Zufriedenheit</span>
+    </div>
+    <div class="trust-tile">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.9 6.3 6.9.6-5.2 4.5 1.6 6.7L12 16.9 5.8 20.6l1.6-6.7L2.2 8.9l6.9-.6L12 2Z"/></svg>
+      <span class="big">Premium</span><span class="text">Zutaten</span>
+    </div>
+    <div class="trust-tile">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c5 0 9 2 9 7Z"/><path d="M11 20c0-7 4-12 9-13 0 7-3 12-9 13Z"/></svg>
+      <span class="big">Haus-</span><span class="text">Gemacht</span>
+    </div>
+  </section>
+
+  <!-- ========================= SPEISEKARTE ========================= -->
+  <div class="head reveal reveal--left" id="karte">
+    <span class="eyebrow">Frisch zubereitet</span><h2>Speisekarte</h2>
+  </div>
+  <div class="menu-grid">
+    <section class="tile cat reveal reveal--left">
+      <svg class="ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 2v20"/><ellipse cx="12" cy="6" rx="4.2" ry="1.6"/><ellipse cx="12" cy="11" rx="4.2" ry="1.6"/><ellipse cx="12" cy="16" rx="4.2" ry="1.6"/></svg>
+      <h3>Drehspieß</h3><p class="cat-sub">Kalb &amp; Putenfleisch, frisch vom Spieß</p>
+      <div class="item"><span class="name">Drehspieß im Brot</span><span class="desc">mit Salat und Soße</span><span class="dots"></span><span class="price">8,00 €</span></div>
+      <div class="item"><span class="name">Drehspieß Extra Fleisch</span><span class="desc">mit extra Fleisch, Salat und Soße</span><span class="dots"></span><span class="price">10,00 €</span></div>
+      <div class="item"><span class="name">Yufka</span><span class="desc">mit Drehspieß, Salat und Soße</span><span class="dots"></span><span class="price">8,50 €</span></div>
+      <div class="item"><span class="name">Lahmacun Spezial</span><span class="desc">mit Drehspieß, Salat, Petersilie, Zitrone und Soße</span><span class="dots"></span><span class="price">9,50 €</span></div>
+      <div class="item"><span class="name">Drehspießbox</span><span class="desc">mit Reis oder Pommes und Soße</span><span class="dots"></span><span class="price">8,00 €</span></div>
+      <div class="item"><span class="name">Drehspießteller</span><span class="desc">mit Reis oder Pommes, Salat, Kraut und Soße</span><span class="dots"></span><span class="price">13,50 €</span></div>
+      <div class="item"><span class="name">Original Iskenderteller</span><span class="desc">knuspriges Brot, Drehspieß, Butter, Joghurt &amp; hausgem. Tomatensoße</span><span class="dots"></span><span class="price">15,00 €</span></div>
+      <div class="item"><span class="name">Lahmacunteller</span><span class="desc">mit Drehspieß, Käse und Soße überbacken</span><span class="dots"></span><span class="price">13,50 €</span></div>
+      <div class="item"><span class="name">Gebackene Drehspießrolle</span><span class="desc">mit Pommes, Mix-Salat und Soße</span><span class="dots"></span><span class="price">14,00 €</span></div>
+    </section>
+
+    <section class="tile cat reveal reveal--right">
+      <svg class="ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="6" y="11" width="12" height="7" rx="1"/><circle cx="7" cy="6.5" r="1"/><circle cx="11" cy="6.5" r="1"/><circle cx="15" cy="6.5" r="1"/></svg>
+      <h3>Aus dem Backofen</h3><p class="cat-sub">Hausgemacht &amp; frisch überbacken</p>
+      <div class="item"><span class="name">Lasagne hausgemacht</span><span class="desc">mit Schinken und Mozzarella überbacken</span><span class="dots"></span><span class="price">12,50 €</span></div>
+      <div class="item"><span class="name">Rigatoni 4 Formaggi</span><span class="desc">4 Käsesorten, Sahnesoße, Mozzarella überbacken</span><span class="dots"></span><span class="price">13,00 €</span></div>
+      <div class="item"><span class="name">Drehspieß-Auflauf</span><span class="desc">Paprika, Mix-Pilze, Cherrytomaten, Käse, Tomaten-Sahnesoße</span><span class="dots"></span><span class="price">14,00 €</span></div>
+      <div class="item"><span class="name">Kartoffelgratin Classic</span><span class="desc">Brokkoli, Blumenkohl, Cherrytomaten, Käse, Sahnesoße</span><span class="dots"></span><span class="price">13,90 €</span></div>
+      <div class="item"><span class="name">Kartoffelgratin Mediterran</span><span class="desc">Aubergine, Paprika, Zwiebel, Zucchini, Cherrytomaten, Artischocken, Käse, Tomatensoße</span><span class="dots"></span><span class="price">14,50 €</span></div>
+      <div class="item"><span class="name">Kartoffelgratin Misto</span><span class="desc">versch. Sorten in Tomatensoße überbacken</span><span class="dots"></span><span class="price">14,00 €</span></div>
+      <div class="item"><span class="name">Kartoffelgratin 4 Formaggi</span><span class="desc">Gnocchi, 4 Käsesorten, Cherrytomaten, Baby-Spinat, Chili-Sahnesoße, Käse</span><span class="dots"></span><span class="price">14,00 €</span></div>
+    </section>
+
+    <section class="tile cat reveal reveal--left">
+      <svg class="ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M5 11a7 7 0 0 1 14 0"/><path d="M3 14h18"/><rect x="4" y="16" width="16" height="3" rx="1.5"/></svg>
+      <h3>Hamburger</h3><p class="cat-sub">150 g selbstgemachte Patties, hausgemachte Saucen</p>
+      <div class="item"><span class="name">Hamburger</span><span class="dots"></span><span class="price">8,00 €</span></div>
+      <div class="item item-sub"><span class="name">Menü mit Pommes &amp; 0,33 l Getränk</span><span class="dots"></span><span class="price">12,00 €</span></div>
+      <div class="item"><span class="name">Cheeseburger</span><span class="dots"></span><span class="price">8,50 €</span></div>
+      <div class="item item-sub"><span class="name">Menü mit Pommes &amp; 0,33 l Getränk</span><span class="dots"></span><span class="price">13,00 €</span></div>
+      <div class="item"><span class="name">Doppel Cheeseburger</span><span class="dots"></span><span class="price">11,00 €</span></div>
+      <div class="item item-sub"><span class="name">Menü mit Pommes &amp; 0,33 l Getränk</span><span class="dots"></span><span class="price">15,00 €</span></div>
+      <div class="item"><span class="name">Chili Cheeseburger</span><span class="dots"></span><span class="price">8,50 €</span></div>
+      <div class="item item-sub"><span class="name">Menü mit Pommes &amp; 0,33 l Getränk</span><span class="dots"></span><span class="price">14,50 €</span></div>
+      <div class="item"><span class="name">Bacon Cheeseburger</span><span class="dots"></span><span class="price">10,00 €</span></div>
+      <div class="item item-sub"><span class="name">Menü mit Pommes &amp; 0,33 l Getränk</span><span class="dots"></span><span class="price">15,50 €</span></div>
+      <div class="item"><span class="name">Crispy Chickenburger</span><span class="dots"></span><span class="price">8,50 €</span></div>
+      <div class="item item-sub"><span class="name">Menü mit Pommes &amp; 0,33 l Getränk</span><span class="dots"></span><span class="price">13,50 €</span></div>
+      <div class="item"><span class="name">Chicken Grillburger</span><span class="dots"></span><span class="price">11,00 €</span></div>
+      <div class="item item-sub"><span class="name">Menü mit Pommes &amp; 0,33 l Getränk</span><span class="dots"></span><span class="price">15,50 €</span></div>
+      <div class="item"><span class="name">Vegan Burger<span class="tag-veg">VEGAN</span></span><span class="dots"></span><span class="price">9,00 €</span></div>
+      <div class="item item-sub"><span class="name">Menü mit Pommes &amp; 0,33 l Getränk</span><span class="dots"></span><span class="price">13,00 €</span></div>
+      <div class="item"><span class="name">Vegetarischer Burger<span class="tag-veg">VEGGIE</span></span><span class="dots"></span><span class="price">8,00 €</span></div>
+      <div class="item item-sub"><span class="name">Menü mit Pommes &amp; 0,33 l Getränk</span><span class="dots"></span><span class="price">13,00 €</span></div>
+      <p class="cat-note">Extra hausgem. Patty +2,00 € · Extra Bacon, Jalapeños, Cheddar, Ei oder Schafskäse je +1,00 €</p>
+    </section>
+
+    <section class="tile cat reveal reveal--right">
+      <svg class="ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 16c2.5 2.5 13.5 2.5 16 0"/><path d="M6.5 16c0-5 2.5-9 5.5-9s5.5 4 5.5 9"/></svg>
+      <h3>Pide Schiffchen</h3><p class="cat-sub">Hausgemachte Ofen-Schiffchen</p>
+      <div class="item"><span class="name">Pide mit Käse-Mix</span><span class="dots"></span><span class="price">10,00 €</span></div>
+      <div class="item"><span class="name">Pide mit Spinat und Käse</span><span class="dots"></span><span class="price">11,00 €</span></div>
+      <div class="item"><span class="name">Pide mit Hackfleisch und Käse</span><span class="dots"></span><span class="price">11,90 €</span></div>
+      <div class="item"><span class="name">Pide mit Sucuk, Ei, Oliven, Käse</span><span class="dots"></span><span class="price">12,90 €</span></div>
+    </section>
+
+    <section class="tile cat reveal reveal--left">
+      <svg class="ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M5 21c8 0 14-6 14-14V5h-2C9 5 5 9 5 17v4Z"/><path d="M5 21 19 7"/></svg>
+      <h3>Vegetarische Gerichte<span class="tag-veg">VEGGIE</span></h3><p class="cat-sub">Pflanzlich &amp; frisch</p>
+      <div class="item"><span class="name">Vegetarisches Sandwich</span><span class="desc">mit Salat, Käse und Soße</span><span class="dots"></span><span class="price">7,00 €</span></div>
+      <div class="item"><span class="name">Falafel Sandwich</span><span class="desc">mit Falafel, Salat und Soße</span><span class="dots"></span><span class="price">7,50 €</span></div>
+      <div class="item"><span class="name">Vegetarischer Yufka</span><span class="desc">mit Salat, Käse und Soße</span><span class="dots"></span><span class="price">7,50 €</span></div>
+      <div class="item"><span class="name">Falafel Yufka</span><span class="desc">mit Falafel, Salat, Käse und Soße</span><span class="dots"></span><span class="price">8,00 €</span></div>
+    </section>
+
+    <section class="tile cat reveal reveal--right">
+      <svg class="ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M3.5 12h17"/><path d="M4.5 12a7.5 7.5 0 0 0 15 0"/><path d="M12 12V5"/><path d="M9 5.5 10.4 8M15 5.5 13.6 8"/></svg>
+      <h3>Salat</h3><p class="cat-sub">Frisch &amp; knackig</p>
+      <div class="item"><span class="name">Kleiner gemischter Salat</span><span class="dots"></span><span class="price">6,00 €</span></div>
+      <div class="item"><span class="name">Insalata di Pomodori</span><span class="desc">Tomaten, Zwiebeln</span><span class="dots"></span><span class="price">8,50 €</span></div>
+      <div class="item"><span class="name">Insalata Mista</span><span class="desc">Mais, Eier, getrocknete Tomaten, Käse</span><span class="dots"></span><span class="price">10,00 €</span></div>
+      <div class="item"><span class="name">Insalata Capricciosa</span><span class="desc">Schinken, Mozzarella, Artischocken, Eier</span><span class="dots"></span><span class="price">11,00 €</span></div>
+      <div class="item"><span class="name">Insalata Nizza</span><span class="desc">Tomaten, Zwiebeln, Schafskäse, Peperoni, Thunfisch</span><span class="dots"></span><span class="price">12,00 €</span></div>
+      <div class="item"><span class="name">Fitness Salat</span><span class="desc">Hähnchenbrust, Mix-Pilze, Käse</span><span class="dots"></span><span class="price">12,90 €</span></div>
+    </section>
+
+    <section class="tile cat reveal reveal--left">
+      <svg class="ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 8h12l-1 11a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <h3>Fingerfood</h3><p class="cat-sub">Knusprige Snacks zum Teilen</p>
+      <div class="finger-tags">
+        <span class="ftag">Chili Cheese Nuggets</span>
+        <span class="ftag">Chicken Nuggets</span>
+        <span class="ftag">Mozzarella Sticks</span>
+        <span class="ftag">Onion-Ringe</span>
+        <span class="ftag">Buffalo Chicken Wings</span>
+        <span class="ftag">Brokkoli Cheese</span>
+        <span class="ftag">Steakpommes / Süßkartoffel</span>
+        <span class="ftag">Wedges oder Twister</span>
+        <span class="ftag">Kroketten</span>
+      </div>
+      <p class="cat-note">Preise auf Anfrage – einfach beim Bestellen fragen.</p>
+    </section>
+
+    <section class="tile cat reveal reveal--right">
+      <svg class="ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 9l10-5 10 5-10 13L2 9Z"/><circle cx="9" cy="9" r="1"/><circle cx="13" cy="12" r="1"/></svg>
+      <h3>Gefüllte Pizza Brötchen</h3><p class="cat-sub">Nr. 106 – 109</p>
+      <div class="item"><span class="name">Gefülltes Pizza Brötchen</span><span class="desc">Käse, Thunfisch oder Salami</span><span class="dots"></span><span class="price">auf Anfrage</span></div>
+    </section>
+  </div>
+
+  <!-- =========================== CTA =========================== -->
+  <div class="cta-row reveal reveal--up">
+    <a class="btn btn-primary" href="tel:+4967643661">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg>
+      Jetzt bestellen
+    </a>
+  </div>
+
+  <!-- ========================== GALERIE ========================== -->
+  <div class="head reveal reveal--right"><span class="eyebrow">Einblicke</span><h2>Galerie</h2></div>
+  <section class="tile gallery reveal reveal--up">
+    <div class="grid stagger">
+      <div class="gtile"><img src="https://images.pexels.com/photos/1082343/pexels-photo-1082343.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Steinofen-Pizza" loading="lazy"><span class="cap">Steinofen-Pizza</span></div>
+      <div class="gtile"><img src="https://images.pexels.com/photos/4109233/pexels-photo-4109233.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Saftiger Burger" loading="lazy"><span class="cap">Saftige Burger</span></div>
+      <div class="gtile wide"><img src="https://images.pexels.com/photos/8880741/pexels-photo-8880741.jpeg?auto=compress&cs=tinysrgb&w=1100" alt="Frisch gemacht" loading="lazy"><span class="cap">Alles frisch &amp; hausgemacht</span></div>
+      <div class="gtile"><img src="https://images.pexels.com/photos/5779487/pexels-photo-5779487.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Knusprige Pommes" loading="lazy"><span class="cap">Knusprige Pommes</span></div>
+      <div class="gtile"><img src="https://images.pexels.com/photos/8318370/pexels-photo-8318370.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Frische Salate" loading="lazy"><span class="cap">Frische Beilagen</span></div>
+    </div>
+  </section>
+
+  <!-- ========================== ANFAHRT ========================== -->
+  <div class="head reveal reveal--left"><span class="eyebrow">So findest du uns</span><h2>Anfahrt</h2></div>
+  <section class="tile anfahrt reveal reveal--up">
+    <div class="map" role="img" aria-label="Karte zu Babas Pizza Burger Haus">
+      <div class="road h"></div><div class="road v"></div>
+      <div class="pin"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg></div>
+    </div>
+    <div class="contact-row">
+      <div class="line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><div><span class="label">Adresse</span>Marktstraße 2, 55494 Rheinböllen</div></div>
+      <div class="line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg><div><span class="label">Telefon</span>06764 – 3661</div></div>
+      <div class="line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><span class="label">Öffnungszeiten</span>
+        <div class="hours-list">
+          <div class="hours-row"><span>Mo – Sa</span><span>11:30 – 21:30</span></div>
+          <div class="hours-row"><span>So &amp; Feiertage</span><span>12:00 – 21:30</span></div>
+          <div class="hours-row closed"><span>Dienstag</span><span>Ruhetag</span></div>
+        </div>
+      </div></div>
+    </div>
+    <div class="cta-row" style="margin-top:18px;">
+      <a class="btn btn-primary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Babas+Pizza+Burger+Haus">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        Route öffnen
+      </a>
+      <a class="btn btn-ghost" href="tel:+4967643661">Anrufen &amp; bestellen</a>
+    </div>
+  </section>
+
+  <footer class="foot">© <span class="year"></span> Babas Pizza Burger Haus &nbsp;·&nbsp; <a href="#top">nach oben ↑</a></footer>
+</main>
+
+<script>
+(function(){
+  const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll('.year').forEach(e => e.textContent = new Date().getFullYear());
+
+  function revealNow(){ document.body.classList.add('ready'); }
+  window.addEventListener('load', revealNow);
+  document.addEventListener('DOMContentLoaded', () => setTimeout(revealNow, 300));
+
+  /* Live „Geöffnet / Geschlossen" – Di Ruhetag, So ab 12 Uhr */
+  (function(){
+    const st = document.querySelector('.status');
+    if (!st) return;
+    const now = new Date();
+    const day = now.getDay();
+    const h = now.getHours() + now.getMinutes() / 60;
+    let open = false;
+    if (day !== 2){
+      const openHour = (day === 0) ? 12 : 11.5;
+      open = h >= openHour && h < 21.5;
+    }
+    st.classList.add(open ? 'open' : 'closed');
+    const tx = st.querySelector('.status-text');
+    if (tx) tx.textContent = open ? 'Geöffnet' : 'Geschlossen';
+  })();
+
+  /* Laufband scroll-gesteuert */
+  (function(){
+    const t = document.querySelector('.marquee__track');
+    if (!t || REDUCE) return;
+    t.innerHTML += t.innerHTML;
+    let half = t.scrollWidth / 2, ticking = false;
+    function render(){
+      const y = window.pageYOffset || document.documentElement.scrollTop;
+      let x = -((y * 0.55) % half);
+      if (x > 0) x -= half;
+      t.style.transform = 'translate3d(' + x + 'px,0,0)';
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => { if (!ticking){ ticking = true; requestAnimationFrame(render); } }, { passive:true });
+    window.addEventListener('resize', () => { half = t.scrollWidth / 2; render(); });
+    render();
+  })();
+
+  /* Zähl-Animation */
+  function countUp(el){
+    const target = parseInt(el.dataset.count, 10) || 0;
+    const suffix = el.dataset.suffix || '';
+    if (REDUCE){ el.textContent = target + suffix; return; }
+    const dur = 1400, start = performance.now();
+    (function step(now){
+      const p = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    })(performance.now());
+  }
+
+  /* Scroll-Einflug + Zähler */
+  (function(){
+    const reveals = document.querySelectorAll('.reveal, .stagger');
+    const nums = document.querySelectorAll('.num[data-count]');
+    if (REDUCE || !('IntersectionObserver' in window)){
+      reveals.forEach(e => e.classList.add('in'));
+      nums.forEach(countUp);
+      return;
+    }
+    const io = new IntersectionObserver((ents, ob) => {
+      ents.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); ob.unobserve(e.target); } });
+    }, { threshold:.15, rootMargin:'0px 0px -8% 0px' });
+    reveals.forEach(e => io.observe(e));
+    const io2 = new IntersectionObserver((ents, ob) => {
+      ents.forEach(e => { if (e.isIntersecting){ countUp(e.target); ob.unobserve(e.target); } });
+    }, { threshold:.6 });
+    nums.forEach(n => io2.observe(n));
+  })();
+})();
+</script>
+</body>
+</html>
